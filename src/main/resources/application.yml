@@ -1,0 +1,37 @@
+server:
+  port: 8080
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kmgeronimodb
+    username: postgres
+    password: Babonproduction
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      auto-commit: false
+
+
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: kmgeronimo.dentalclinic@gmail.com
+    password: nleoophvcukmkemu
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+
+
+
+
+
+
+
