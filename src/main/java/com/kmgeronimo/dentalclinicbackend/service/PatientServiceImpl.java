@@ -34,7 +34,7 @@ public class PatientServiceImpl implements PatientService{
 
     @Override
     public String registerPatient(Patient patient) {
-        PatientEntity searchPatient = repository.findByPhoneNumberAndEmail(patient.getPhoneNumber(), patient.getEmail());
+        PatientEntity searchPatient = repository.findByContactNumberAndEmail(patient.getContactNumber(), patient.getEmail());
         if(!Objects.isNull(searchPatient)){
             return "Email or phone number already exist";
         }
@@ -65,7 +65,7 @@ public class PatientServiceImpl implements PatientService{
                     .gender(patientEntity.get().getGender())
                     .birthday(patientEntity.get().getBirthday())
                     .address(patientEntity.get().getAddress())
-                    .phoneNumber(patientEntity.get().getPhoneNumber())
+                    .contactNumber(patientEntity.get().getContactNumber())
                     .email(patientEntity.get().getEmail())
                     .profile(patientEntity.get().getProfile())
                     .verified(patientEntity.get().getVerified())

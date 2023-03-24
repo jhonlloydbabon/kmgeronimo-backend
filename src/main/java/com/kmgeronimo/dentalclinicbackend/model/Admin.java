@@ -14,9 +14,9 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 @Builder
 public class Admin {
-    private String adminFirstname;
-    private String adminMiddlename;
-    private String adminLastname;
+    private String firstname;
+    private String middlename;
+    private String lastname;
     private LocalDate birthday;
     private String email;
     private String address;

@@ -15,9 +15,9 @@ public class AdminEntity {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String adminId;
-    private String adminFirstname;
-    private String adminMiddlename;
-    private String adminLastname;
+    private String firstname;
+    private String middlename;
+    private String lastname;
     private LocalDate birthday;
     private String address;
     private String email;

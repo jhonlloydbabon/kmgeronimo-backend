@@ -3,6 +3,7 @@ package com.kmgeronimo.dentalclinicbackend.controller;
 import com.kmgeronimo.dentalclinicbackend.entity.AdminEntity;
 import com.kmgeronimo.dentalclinicbackend.entity.ResponseMessage;
 import com.kmgeronimo.dentalclinicbackend.event.RegistrationCompleteEvent;
+import com.kmgeronimo.dentalclinicbackend.model.AccountDisable;
 import com.kmgeronimo.dentalclinicbackend.model.Admin;
 import com.kmgeronimo.dentalclinicbackend.service.AdminService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -88,6 +89,12 @@ public class AdminController implements ErrorController {
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseMessage> updateAdminInformation(@PathVariable("id") String id, @RequestBody Admin admin){
         ResponseMessage message = service.updateAdminInformation(id, admin);
+        return ResponseEntity.status(message.getStatus()).body(message);
+    }
+
+    @PostMapping("/disable")
+    public ResponseEntity<ResponseMessage> disableAdmin(@RequestBody AccountDisable accountDisable){
+        ResponseMessage message = service.disableAdmin(accountDisable);
         return ResponseEntity.status(message.getStatus()).body(message);
     }
 }

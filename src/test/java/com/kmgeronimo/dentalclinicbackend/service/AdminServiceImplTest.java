@@ -1,34 +1,35 @@
 package com.kmgeronimo.dentalclinicbackend.service;
 
-import com.kmgeronimo.dentalclinicbackend.entity.AdminEntity;
 import com.kmgeronimo.dentalclinicbackend.model.Admin;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class AdminServiceTest {
-
+class AdminServiceImplTest {
     @Autowired
-    private AdminService service;
+    private AdminServiceImpl service;
+
     @Test
-    public void  testAdminRegistration() throws Exception {
+    public void registerTest() throws Exception {
         Admin admin = Admin.builder()
-                .adminFirstname("Jhon Lloyd")
-                .adminMiddlename("Nabual")
-                .adminLastname("Babon")
-                .birthday(LocalDate.of(1999,12, 30))
+                .firstname("Jhon Lloyd")
+                .middlename("Nabual")
+                .lastname("Babon")
                 .email("jlbabon12@gmail.com")
+                .address("Malabon")
+                .contactNumber("09222463571")
+                .gender("Male")
+                .birthday(LocalDate.parse("1999-12-30"))
                 .username("admin")
-                .password("admin123")
-                .role("ADMIN")
-                .enabled(true)
+                .password("123")
+                .role("Admin")
                 .build();
+
         service.registerAdmin(admin);
     }
 }

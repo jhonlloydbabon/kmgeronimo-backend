@@ -4,6 +4,7 @@ import com.kmgeronimo.dentalclinicbackend.entity.AdminEntity;
 import com.kmgeronimo.dentalclinicbackend.entity.PasswordVerificationToken;
 import com.kmgeronimo.dentalclinicbackend.entity.ResponseMessage;
 import com.kmgeronimo.dentalclinicbackend.entity.VerificationToken;
+import com.kmgeronimo.dentalclinicbackend.model.AccountDisable;
 import com.kmgeronimo.dentalclinicbackend.model.Admin;
 import com.kmgeronimo.dentalclinicbackend.repository.AdminRepository;
 import com.kmgeronimo.dentalclinicbackend.repository.PasswordRecoveryTokenRepository;
@@ -107,7 +108,7 @@ public class AdminServiceImpl implements AdminService {
         PasswordVerificationToken verificationToken = new PasswordVerificationToken(adminEntity, token);
         passwordRepository.save(verificationToken);
 
-        sendAccountRecovery(token, verificationToken.getAdminEntity().getAdminLastname(), verificationToken.getAdminEntity().getEmail());
+        sendAccountRecovery(token, verificationToken.getAdminEntity().getLastname(), verificationToken.getAdminEntity().getEmail());
         return new ResponseMessage(HttpStatus.OK, "Message sent!");
     }
 
@@ -144,19 +145,25 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public ResponseMessage updateAdminInformation(String id, Admin admin) {
         AdminEntity adminEntity = repository.findById(id).get();
-        adminEntity.setAdminFirstname(admin.getAdminFirstname());
-        adminEntity.setAdminMiddlename(admin.getAdminMiddlename());
-        adminEntity.setAdminLastname(admin.getAdminLastname());
+        adminEntity.setFirstname(admin.getFirstname());
+        adminEntity.setMiddlename(admin.getMiddlename());
+        adminEntity.setLastname(admin.getLastname());
         adminEntity.setAddress(admin.getAddress());
         adminEntity.setBirthday(admin.getBirthday());
         adminEntity.setContactNumber(adminEntity.getContactNumber());
         adminEntity.setEmail(adminEntity.getEmail());
         adminEntity.setGender(admin.getGender());
-        if(!Objects.isNull(adminEntity.getProfile())){
-            adminEntity.setProfile(admin.getProfile());
-        }
+        adminEntity.setProfile(admin.getProfile());
         repository.save(adminEntity);
         return new ResponseMessage(HttpStatus.OK, "Update successfully");
+    }
+
+    @Override
+    public ResponseMessage disableAdmin(AccountDisable accountDisable) {
+        AdminEntity adminEntity = repository.findById(accountDisable.getId()).get();
+        adminEntity.setEnabled(accountDisable.getVerified());
+        repository.save(adminEntity);
+        return new ResponseMessage(HttpStatus.OK, "Disable Successfully!");
     }
 
     @Override

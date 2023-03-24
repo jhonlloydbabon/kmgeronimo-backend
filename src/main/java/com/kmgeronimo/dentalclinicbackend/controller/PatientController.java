@@ -30,7 +30,7 @@ public class PatientController {
                 .gender(request.get("gender"))
                 .address(request.get("address"))
                 .email(request.get("email"))
-                .phoneNumber(request.get("phoneNumber"))
+                .contactNumber(request.get("phoneNumber"))
                 .birthday(LocalDate.parse(request.get("birthday")))
                 .age(Integer.parseInt(request.get("age")))
                 .profile(request.get("profile"))

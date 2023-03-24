@@ -2,6 +2,7 @@ package com.kmgeronimo.dentalclinicbackend.service;
 
 import com.kmgeronimo.dentalclinicbackend.entity.AdminEntity;
 import com.kmgeronimo.dentalclinicbackend.entity.ResponseMessage;
+import com.kmgeronimo.dentalclinicbackend.model.AccountDisable;
 import com.kmgeronimo.dentalclinicbackend.model.Admin;
 
 import java.util.List;
@@ -29,4 +30,6 @@ public interface AdminService {
     List<AdminEntity> fetchDentist();
 
     ResponseMessage updateAdminInformation(String id, Admin admin);
+
+    ResponseMessage disableAdmin(AccountDisable accountDisable);
 }

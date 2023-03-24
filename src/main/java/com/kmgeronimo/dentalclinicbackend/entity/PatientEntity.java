@@ -20,7 +20,7 @@ public class PatientEntity {
     private String gender;
     private String address;
     private String email;
-    private String phoneNumber;
+    private String contactNumber;
     private Integer age;
     private LocalDate birthday;
     @Lob
