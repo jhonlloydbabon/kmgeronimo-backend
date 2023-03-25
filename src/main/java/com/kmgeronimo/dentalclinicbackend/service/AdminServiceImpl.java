@@ -150,8 +150,8 @@ public class AdminServiceImpl implements AdminService {
         adminEntity.setLastname(admin.getLastname());
         adminEntity.setAddress(admin.getAddress());
         adminEntity.setBirthday(admin.getBirthday());
-        adminEntity.setContactNumber(adminEntity.getContactNumber());
-        adminEntity.setEmail(adminEntity.getEmail());
+        adminEntity.setContactNumber(admin.getContactNumber());
+        adminEntity.setEmail(admin.getEmail());
         adminEntity.setGender(admin.getGender());
         adminEntity.setProfile(admin.getProfile());
         repository.save(adminEntity);

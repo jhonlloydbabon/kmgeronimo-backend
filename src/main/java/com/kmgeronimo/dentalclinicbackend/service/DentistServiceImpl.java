@@ -51,7 +51,8 @@ public class DentistServiceImpl implements DentistService{
         dentistEntity.setBirthday(dentist.getBirthday());
         dentistEntity.setAddress(dentist.getAddress());
         dentistEntity.setContactNumber(dentist.getContactNumber());
-        dentistEntity.setContactNumber(dentist.getContactNumber());
+        dentistEntity.setGender(dentist.getGender());
+        dentistEntity.setAge(calculateDentistAge(dentist.getBirthday()));
         dentistEntity.setEmail(dentist.getEmail());
         dentistEntity.setSpecialty(dentist.getSpecialty());
         dentistEntity.setProfile(dentist.getProfile());

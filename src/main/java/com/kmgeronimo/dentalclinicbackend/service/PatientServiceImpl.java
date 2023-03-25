@@ -33,10 +33,10 @@ public class PatientServiceImpl implements PatientService{
     private JavaMailSender mailSender;
 
     @Override
-    public String registerPatient(Patient patient) {
+    public ResponseMessage registerPatient(Patient patient) {
         PatientEntity searchPatient = repository.findByContactNumberAndEmail(patient.getContactNumber(), patient.getEmail());
         if(!Objects.isNull(searchPatient)){
-            return "Email or phone number already exist";
+            return new ResponseMessage(HttpStatus.OK, "Email or phone number already exist");
         }
         PatientEntity patientEntity = new PatientEntity();
         BeanUtils.copyProperties(patient, patientEntity);
@@ -44,7 +44,7 @@ public class PatientServiceImpl implements PatientService{
         patientEntity.setAge(calculateAge(patient.getBirthday()));
         patientEntity.setVerified(true);
         repository.save(patientEntity);
-        return "Account Registered Successfully!";
+        return new ResponseMessage(HttpStatus.OK, "Account Registered Successfully!");
     }
 
     @Override
@@ -76,34 +76,15 @@ public class PatientServiceImpl implements PatientService{
     @Override
     public ResponseMessage updatePatientInformation(String id, Patient patient) {
         PatientEntity patientEntity = repository.findById(id).get();
-        if(!patient.getFirstname().equals(patientEntity.getFirstname())){
-            patientEntity.setFirstname(patient.getFirstname());
-        }
-        if(!patient.getMiddlename().equals(patientEntity.getMiddlename())){
-            patientEntity.setMiddlename(patient.getMiddlename());
-        }
-        if(!patient.getLastname().equals(patientEntity.getLastname())){
-            patientEntity.setLastname(patient.getLastname());
-        }
-        if(!patient.getEmail().equals(patientEntity.getEmail())){
-            patientEntity.setEmail(patient.getEmail());
-        }
-        if(!patient.getAddress().equals(patientEntity.getAddress())){
-            patientEntity.setAddress(patient.getAddress());
-        }
-        if(!patient.getBirthday().equals(patientEntity.getBirthday())){
-            patientEntity.setBirthday(patient.getBirthday());
-            patientEntity.setAge(calculateAge(patient.getBirthday()));
-        }
-        if(!patient.getGender().equals(patientEntity.getGender())){
-            patientEntity.setGender(patient.getGender());
-        }
-        if(!patient.getProfile().equals(patientEntity.getProfile())){
-            patientEntity.setProfile(patient.getProfile());
-        }
-        if(!patient.getVerified().equals(patientEntity.getVerified())){
-            patientEntity.setVerified(patient.getVerified());
-        }
+        patientEntity.setFirstname(patient.getFirstname());
+        patientEntity.setMiddlename(patient.getMiddlename());
+        patientEntity.setLastname(patient.getLastname());
+        patientEntity.setBirthday(patient.getBirthday());
+        patientEntity.setAge(calculateAge(patient.getBirthday()));
+        patientEntity.setAddress(patient.getAddress());
+        patientEntity.setGender(patient.getGender());
+        patientEntity.setContactNumber(patient.getContactNumber());
+        patientEntity.setEmail(patient.getEmail());
         repository.save(patientEntity);
         return new ResponseMessage(HttpStatus.OK, "Update Patient Information Successfully!");
     }

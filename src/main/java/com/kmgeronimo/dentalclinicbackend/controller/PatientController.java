@@ -22,23 +22,8 @@ public class PatientController {
     private PatientService service;
 
     @PostMapping("/registration")
-    public ResponseEntity<String> registerPatient(@RequestParam Map<String, String> request){
-        Patient patient = Patient.builder()
-                .firstname(request.get("firstname"))
-                .middlename(request.get("middlename"))
-                .lastname(request.get("lastname"))
-                .gender(request.get("gender"))
-                .address(request.get("address"))
-                .email(request.get("email"))
-                .contactNumber(request.get("phoneNumber"))
-                .birthday(LocalDate.parse(request.get("birthday")))
-                .age(Integer.parseInt(request.get("age")))
-                .profile(request.get("profile"))
-                .username(request.get("username"))
-                .password(request.get("password"))
-                .verified(true)
-                .build();
-        String result = service.registerPatient(patient);
+    public ResponseEntity<ResponseMessage> registerPatient(@RequestBody Patient patient){
+        ResponseMessage result = service.registerPatient(patient);
         return ResponseEntity.ok().body(result);
     }
 
@@ -54,18 +39,7 @@ public class PatientController {
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseMessage> updatePatientInformation(@PathVariable("id") String id,
-                                                                    @RequestParam Map<String, String> request){
-        Patient patient = Patient.builder()
-                .firstname(request.get("firstname"))
-                .middlename(request.get("middlename"))
-                .lastname(request.get("lastname"))
-                .email(request.get("email"))
-                .address(request.get("address"))
-                .birthday(LocalDate.parse(request.get("birthday")))
-                .gender(request.get("gender"))
-                .profile(request.get("profile"))
-                .verified(Boolean.parseBoolean(request.get("verified")))
-                .build();
+                                                                    @RequestBody Patient patient){
         ResponseMessage responseMessage = service.updatePatientInformation(id, patient);
         return ResponseEntity.status(responseMessage.getStatus()).body(responseMessage);
     }

@@ -29,7 +29,7 @@ public class AdminController implements ErrorController {
     private ApplicationEventPublisher publisher;
 
     @PostMapping("/registration")
-    public ResponseEntity<ResponseMessage> registerAdmin(@RequestBody Admin admin, final HttpServletRequest request) throws Exception {
+    public ResponseEntity<ResponseMessage> registerAdmin(@RequestBody Admin admin) throws Exception {
         ResponseMessage message = service.registerAdmin(admin);
         return ResponseEntity.status(message.getStatus()).body(message);
     }

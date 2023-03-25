@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PatientService {
 
-    String registerPatient(Patient patient);
+    ResponseMessage registerPatient(Patient patient);
 
     List<PatientEntity> fetchAllPatient();
 

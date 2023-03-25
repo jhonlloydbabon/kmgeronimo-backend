@@ -22,6 +22,7 @@ public class WebSecurityConfig {
             "/api/v1/admin/**",
             "/api/v1/patient/**",
             "/api/v1/dentist/**",
+            "/api/v1/schedule/**",
             "/ws/"
     };
 
