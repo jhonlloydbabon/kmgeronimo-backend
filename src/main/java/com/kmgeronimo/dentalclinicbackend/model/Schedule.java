@@ -19,7 +19,5 @@ import java.time.LocalTime;
 public class Schedule {
     private LocalDate date;
     private LocalTime timeStart;
-    private LocalTime timeEnd;
-    private LocalTime duration;
     private String dentistId;
 }

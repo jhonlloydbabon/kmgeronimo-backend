@@ -24,8 +24,6 @@ public class ScheduleEntity {
     private String scheduleId;
     private LocalDate date;
     private LocalTime timeStart;
-    private LocalTime timeEnd;
-    private LocalTime duration;
     @OneToOne
     @JoinColumn(
             name = "dentistId",
