@@ -2,6 +2,7 @@ package com.kmgeronimo.dentalclinicbackend.service;
 
 import com.kmgeronimo.dentalclinicbackend.entity.DentalServiceEntity;
 import com.kmgeronimo.dentalclinicbackend.entity.ResponseMessage;
+import com.kmgeronimo.dentalclinicbackend.model.AccountDisable;
 import com.kmgeronimo.dentalclinicbackend.model.DentalService;
 import com.kmgeronimo.dentalclinicbackend.repository.DentalServiceRepository;
 import org.springframework.beans.BeanUtils;
@@ -38,4 +39,31 @@ public class DentalServiceServiceImpl implements DentalServiceService{
     public List<DentalServiceEntity> fecthAllDentalServices() {
         return dentalServiceRepository.findAll();
     }
+
+    @Override
+    public ResponseMessage updateDentalService(String id, DentalService dentalService) {
+        DentalServiceEntity dentalServiceEntity = dentalServiceRepository.findById(id).get();
+        dentalServiceEntity.setName(dentalService.getName());
+        dentalServiceEntity.setType(dentalService.getType());
+        dentalServiceEntity.setDuration((LocalTime) dentalService.getDuration());
+        dentalServiceEntity.setDescription(dentalService.getDescription());
+        dentalServiceEntity.setPrice((Double)dentalService.getPrice());
+        dentalServiceRepository.save(dentalServiceEntity);
+        return new ResponseMessage(HttpStatus.OK, "Update successfully!");
+    }
+
+    @Override
+    public ResponseMessage disableDentalService(AccountDisable disable) {
+        DentalServiceEntity dentalServiceEntity = dentalServiceRepository.findById(disable.getId()).get();
+        dentalServiceEntity.setIsAvailable(disable.getVerified());
+        dentalServiceRepository.save(dentalServiceEntity);
+        return new ResponseMessage(HttpStatus.OK, "Disable account successfully!");
+    }
+
+    @Override
+    public ResponseMessage deleteDentalService(String id) {
+        dentalServiceRepository.deleteById(id);
+        return new ResponseMessage(HttpStatus.OK, "Deleted Successfully!");
+    }
+
 }
