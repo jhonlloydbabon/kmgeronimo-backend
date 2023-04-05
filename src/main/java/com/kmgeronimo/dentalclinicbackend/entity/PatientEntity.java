@@ -1,10 +1,12 @@
 package com.kmgeronimo.dentalclinicbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -29,4 +31,12 @@ public class PatientEntity {
     @Column(length = 60)
     private String password;
     private Boolean verified;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "patientId", referencedColumnName = "patientId")
+    private List<InsuranceEntity> insurance;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "patient")
+    private PaymentEntity payment;
 }

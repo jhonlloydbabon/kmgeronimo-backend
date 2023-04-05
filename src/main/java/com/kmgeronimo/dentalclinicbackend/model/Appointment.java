@@ -17,12 +17,13 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Appointment {
-    private PatientEntity patientId;
-    private DentistEntity dentistId;
-    private List<DentalServiceEntity> dentalServiceEntities;
+    private String patient;
+    private String dentist;
+    private String [] dentalServices;
     private LocalDate date;
     private LocalTime timeStart;
     private LocalTime timeEnd;
-    private String status;
     private Double totalAmount;
+    private String method;
+    private String type;
 }

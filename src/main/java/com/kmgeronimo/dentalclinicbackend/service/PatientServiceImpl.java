@@ -1,5 +1,6 @@
 package com.kmgeronimo.dentalclinicbackend.service;
 
+import com.kmgeronimo.dentalclinicbackend.entity.InsuranceEntity;
 import com.kmgeronimo.dentalclinicbackend.entity.PatientEntity;
 import com.kmgeronimo.dentalclinicbackend.entity.ResponseMessage;
 import com.kmgeronimo.dentalclinicbackend.error.UserNotFoundException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,8 +40,20 @@ public class PatientServiceImpl implements PatientService{
         if(!Objects.isNull(searchPatient)){
             return new ResponseMessage(HttpStatus.OK, "Email or phone number already exist");
         }
+
         PatientEntity patientEntity = new PatientEntity();
         BeanUtils.copyProperties(patient, patientEntity);
+
+        if(patient.getHaveInsurance().equalsIgnoreCase("yes")){
+            List<InsuranceEntity> insuranceEntities = new ArrayList<>();
+            InsuranceEntity hmo = new InsuranceEntity();
+            hmo.setCard(patient.getCard());
+            hmo.setCardNumber(patient.getCardNumber());
+            hmo.setCompany(patient.getCompany());
+            insuranceEntities.add(hmo);
+            patientEntity.setInsurance(insuranceEntities);
+        }
+
         patientEntity.setPassword(passwordEncoder.encode(patient.getPassword()));
         patientEntity.setAge(calculateAge(patient.getBirthday()));
         patientEntity.setVerified(true);

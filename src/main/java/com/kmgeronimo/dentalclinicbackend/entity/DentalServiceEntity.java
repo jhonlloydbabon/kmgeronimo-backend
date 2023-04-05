@@ -1,17 +1,17 @@
 package com.kmgeronimo.dentalclinicbackend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
-@Table(name = "Service")
+@Table(name = "services")
 public class DentalServiceEntity {
     @Id
     @GenericGenerator( name = "uuid", strategy = "uuid2")
@@ -23,4 +23,8 @@ public class DentalServiceEntity {
     private LocalTime duration;
     private Double price;
     private Boolean isAvailable;
+
+    @JsonIgnore // to ignore this
+    @ManyToMany(mappedBy = "dentalServices") // name of the table in the Appointment;
+    List<AppointmentsEntity> appointments = new ArrayList<>();
 }
