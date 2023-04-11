@@ -26,4 +26,5 @@ public class Appointment {
     private Double totalAmount;
     private String method;
     private String type;
+    private String insuranceId;
 }

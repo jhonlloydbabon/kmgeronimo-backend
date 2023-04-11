@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -26,7 +28,5 @@ public class Patient {
     private String password;
     private Boolean verified;
     private String haveInsurance;
-    private String card;
-    private String company;
-    private String cardNumber;
+    private List<InsuranceModel> insuranceInfo = new ArrayList<>();
 }

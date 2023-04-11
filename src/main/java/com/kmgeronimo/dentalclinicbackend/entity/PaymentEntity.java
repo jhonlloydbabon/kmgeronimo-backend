@@ -26,4 +26,8 @@ public class PaymentEntity {
     @Lob
     private String paymentPhoto;
     private PaymentStatus status;
+
+    @OneToOne
+    @JoinColumn(name = "insurance_id")
+    private InsuranceEntity insurance;
 }

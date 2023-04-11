@@ -3,6 +3,7 @@ package com.kmgeronimo.dentalclinicbackend.controller;
 import com.kmgeronimo.dentalclinicbackend.entity.AppointmentsEntity;
 import com.kmgeronimo.dentalclinicbackend.entity.ResponseMessage;
 import com.kmgeronimo.dentalclinicbackend.model.Appointment;
+import com.kmgeronimo.dentalclinicbackend.model.AppointmentStatusModel;
 import com.kmgeronimo.dentalclinicbackend.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,20 @@ public class AppointmentController {
         return ResponseEntity.status(message.getStatus()).body(message);
     }
     @GetMapping("/")
-
     public List<AppointmentsEntity> fetchAllAppointmentEntity(){
         return service.fetchAllAppointmentEntity();
     }
+
+    @PutMapping("/status/{id}")
+    public ResponseEntity<ResponseMessage> editAppointmentStatus(@PathVariable("id") String id, @RequestBody AppointmentStatusModel appointmentStatusModel){
+        ResponseMessage message = service.editAppointmentStatus(id, appointmentStatusModel);
+        return ResponseEntity.status(message.getStatus()).body(message);
+    }
+
+    @DeleteMapping("/{id}")
+    private ResponseEntity<ResponseMessage> deleteAppointment(@PathVariable("id") String id){
+        ResponseMessage message = service.deleteAppointment(id);
+        return ResponseEntity.status(message.getStatus()).body(message);
+    }
+
 }

@@ -17,10 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -45,12 +43,14 @@ public class PatientServiceImpl implements PatientService{
         BeanUtils.copyProperties(patient, patientEntity);
 
         if(patient.getHaveInsurance().equalsIgnoreCase("yes")){
-            List<InsuranceEntity> insuranceEntities = new ArrayList<>();
-            InsuranceEntity hmo = new InsuranceEntity();
-            hmo.setCard(patient.getCard());
-            hmo.setCardNumber(patient.getCardNumber());
-            hmo.setCompany(patient.getCompany());
-            insuranceEntities.add(hmo);
+            List<InsuranceEntity> insuranceEntities = patient.getInsuranceInfo().stream()
+                            .map((val)->{
+                                InsuranceEntity entity = new InsuranceEntity();
+                                entity.setCompany(val.getCompany());
+                                entity.setCardNumber(val.getCardNumber());
+                                entity.setCard(val.getCard());
+                                return entity;
+                            }).collect(Collectors.toList());
             patientEntity.setInsurance(insuranceEntities);
         }
 

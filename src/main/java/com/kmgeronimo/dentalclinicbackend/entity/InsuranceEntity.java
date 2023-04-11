@@ -1,15 +1,17 @@
 package com.kmgeronimo.dentalclinicbackend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Data
 @Table(name = "insurance")
+@AllArgsConstructor
+@NoArgsConstructor
 public class InsuranceEntity {
     @Id
     @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -18,4 +20,8 @@ public class InsuranceEntity {
     private String card;
     private String company;
     private String cardNumber;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "insurance")
+    private PaymentEntity payment;
 }

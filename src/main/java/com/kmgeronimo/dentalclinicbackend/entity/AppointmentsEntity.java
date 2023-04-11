@@ -37,7 +37,6 @@ public class AppointmentsEntity {
             ))
     private List<DentalServiceEntity> dentalServices = new ArrayList<>();
 
-
     private LocalDate dateSubmitted;
     private LocalDate appointmentDate;
     private LocalTime timeStart;
