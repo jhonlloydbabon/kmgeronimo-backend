@@ -15,7 +15,7 @@ public class PaymentEntity {
     @GeneratedValue(generator = "uuid")
     private String paymentId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "patient_id")
     private PatientEntity patient;
 
@@ -30,4 +30,8 @@ public class PaymentEntity {
     @OneToOne
     @JoinColumn(name = "insurance_id")
     private InsuranceEntity insurance;
+
+    @OneToOne
+    @JoinColumn(name = "appointment_id")
+    private AppointmentsEntity appointment;
 }

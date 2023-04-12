@@ -7,6 +7,7 @@ import com.kmgeronimo.dentalclinicbackend.model.Appointment;
 import com.kmgeronimo.dentalclinicbackend.model.AppointmentStatusModel;
 import com.kmgeronimo.dentalclinicbackend.model.History;
 import com.kmgeronimo.dentalclinicbackend.repository.*;
+import jakarta.persistence.NonUniqueResultException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
@@ -45,12 +48,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public ResponseMessage createAppointment(Appointment appointment) {
-
             PatientEntity patient = patientRepository.findById(appointment.getPatient()).get();
-            Optional<AppointmentsEntity> optionalAppointments = Optional.ofNullable(appointmentRepository.findByPatient(patient));
-            if(optionalAppointments.isPresent() && !optionalAppointments.get().getStatus().equals(AppointmentStatus.CANCELLED)){
-                return new ResponseMessage(HttpStatus.CONFLICT, "Appointment for "+patient.getFirstname()+" already exist");
-            }
+            List<AppointmentsEntity> appointmentsEntities = appointmentRepository.findAllByPatient(patient)
+                    .stream()
+                    .filter((val)-> val.getStatus().equals(AppointmentStatus.APPROVED) || val.getStatus().equals(AppointmentStatus.PENDING))
+                    .filter(val-> val.getAppointmentDate().equals(appointment.getDate()) )
+                    .collect(Collectors.toList());
+
+            System.out.println(appointmentsEntities.size());
+
+            if(appointmentsEntities.size() > 0) return new ResponseMessage(HttpStatus.CONFLICT, "Appointment Already exist!");
             AppointmentsEntity appointmentsEntity = new AppointmentsEntity();
             DentistEntity dentist = dentistRepository.findById(appointment.getDentist()).get();
             List<DentalServiceEntity> dentalServiceEntities = new ArrayList<>();
@@ -70,10 +77,11 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointmentRepository.save(appointmentsEntity);
 
             PaymentEntity paymentEntity = new PaymentEntity();
-            InsuranceEntity insurance = new InsuranceEntity();
+            InsuranceEntity insurance = null;
             if(appointment.getMethod().equalsIgnoreCase("hmo")){
                 insurance = insuranceRepository.findById(appointment.getInsuranceId()).get();
             }
+            paymentEntity.setAppointment(appointmentsEntity);
             paymentEntity.setMethod(appointment.getMethod());
             paymentEntity.setInsurance(insurance);
             paymentEntity.setType(appointment.getType());
@@ -93,7 +101,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public ResponseMessage editAppointmentStatus(String id, AppointmentStatusModel statusModel) {
         AppointmentsEntity appointmentsEntity = appointmentRepository.findById(id).get();
-        appointmentsEntity.setStatus(AppointmentStatus.valueOf(statusModel.getStatus()));
+
         History history = null;
         if(appointmentsEntity.getStatus().equals(AppointmentStatus.DONE)){
              history = History.builder()
@@ -117,10 +125,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             BeanUtils.copyProperties(history, historyEntity);
             historyRepository.save(historyEntity);
 
-            PatientEntity patient = patientRepository.findById(appointmentsEntity.getPatient().getPatientId()).get();
-            PaymentEntity paymentEntity = paymentRepository.findByPatient(patient);
+            PaymentEntity paymentEntity = paymentRepository.findByAppointment(appointmentsEntity);
             paymentRepository.delete(paymentEntity);
         }
+        appointmentsEntity.setStatus(AppointmentStatus.valueOf(statusModel.getStatus()));
         appointmentRepository.save(appointmentsEntity);
         return new ResponseMessage(HttpStatus.OK, "The appointment has been "+statusModel.getStatus());
     }
@@ -128,13 +136,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public ResponseMessage deleteAppointment(String id) {
         AppointmentsEntity appointmentsEntity = appointmentRepository.findById(id).get();
-        if(appointmentsEntity.getStatus().equals(AppointmentStatus.CANCELLED)){
-            return new ResponseMessage(HttpStatus.NOT_ACCEPTABLE, "You can't delete this appointment");
+        if(!appointmentsEntity.getStatus().equals(AppointmentStatus.CANCELLED)){
+            PaymentEntity paymentEntity = paymentRepository.findByAppointment(appointmentsEntity);
+            paymentRepository.delete(paymentEntity);
+            appointmentRepository.delete(appointmentsEntity);
+            return new ResponseMessage(HttpStatus.OK, "Delete successfully");
         }
-        PatientEntity patientEntity = patientRepository.findById(appointmentsEntity.getPatient().getPatientId()).get();
-        PaymentEntity paymentEntity = paymentRepository.findByPatient(patientEntity);
-        paymentRepository.delete(paymentEntity);
-        appointmentRepository.delete(appointmentsEntity);
-        return new ResponseMessage(HttpStatus.OK, "Delete successfully");
+        return new ResponseMessage(HttpStatus.NOT_ACCEPTABLE, "You can't delete this appointment");
     }
 }

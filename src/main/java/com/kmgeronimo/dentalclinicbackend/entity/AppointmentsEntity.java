@@ -1,5 +1,6 @@
 package com.kmgeronimo.dentalclinicbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kmgeronimo.dentalclinicbackend.enums.AppointmentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -43,4 +44,8 @@ public class AppointmentsEntity {
     private LocalTime timeEnd;
     private AppointmentStatus status;
     private Boolean doneReadingTC;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "appointment")
+    private PaymentEntity payment;
 }
