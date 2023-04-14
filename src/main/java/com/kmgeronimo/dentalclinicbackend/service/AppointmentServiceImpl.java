@@ -77,6 +77,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointmentRepository.save(appointmentsEntity);
 
             PaymentEntity paymentEntity = new PaymentEntity();
+            paymentEntity.setPatient(patient);
             InsuranceEntity insurance = null;
             if(appointment.getMethod().equalsIgnoreCase("hmo")){
                 insurance = insuranceRepository.findById(appointment.getInsuranceId()).get();
@@ -86,7 +87,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             paymentEntity.setInsurance(insurance);
             paymentEntity.setType(appointment.getType());
             paymentEntity.setTotalPayment((Double) appointment.getTotalAmount());
-            paymentEntity.setPatient(patient);
+
             paymentEntity.setStatus(PaymentStatus.PENDING);
             paymentEntity.setPaymentPhoto(null);
             paymentRepository.save(paymentEntity);
@@ -100,8 +101,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public ResponseMessage editAppointmentStatus(String id, AppointmentStatusModel statusModel) {
+        System.out.println(id+" "+ statusModel);
         AppointmentsEntity appointmentsEntity = appointmentRepository.findById(id).get();
-
+        appointmentsEntity.setStatus(AppointmentStatus.valueOf(statusModel.getStatus()));
         History history = null;
         if(appointmentsEntity.getStatus().equals(AppointmentStatus.DONE)){
              history = History.builder()
@@ -124,11 +126,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             HistoryEntity historyEntity = new HistoryEntity();
             BeanUtils.copyProperties(history, historyEntity);
             historyRepository.save(historyEntity);
-
             PaymentEntity paymentEntity = paymentRepository.findByAppointment(appointmentsEntity);
             paymentRepository.delete(paymentEntity);
         }
-        appointmentsEntity.setStatus(AppointmentStatus.valueOf(statusModel.getStatus()));
+
         appointmentRepository.save(appointmentsEntity);
         return new ResponseMessage(HttpStatus.OK, "The appointment has been "+statusModel.getStatus());
     }

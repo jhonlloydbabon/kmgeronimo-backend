@@ -38,9 +38,5 @@ public class PatientEntity {
 
     @JsonIgnore
     @OneToMany(mappedBy = "patient")
-    private List<PaymentEntity> payment;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "patient")
     private List<AppointmentsEntity> appointment;
 }

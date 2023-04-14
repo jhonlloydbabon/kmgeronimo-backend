@@ -21,7 +21,4 @@ public class InsuranceEntity {
     private String company;
     private String cardNumber;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "insurance")
-    private PaymentEntity payment;
 }
