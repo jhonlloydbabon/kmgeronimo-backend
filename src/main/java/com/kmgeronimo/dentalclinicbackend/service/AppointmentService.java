@@ -15,4 +15,6 @@ public interface AppointmentService {
     ResponseMessage editAppointmentStatus(String id, AppointmentStatusModel appointmentStatusModel);
 
     ResponseMessage deleteAppointment(String id);
+
+    AppointmentsEntity fetchAppointmentEntity(String id);
 }

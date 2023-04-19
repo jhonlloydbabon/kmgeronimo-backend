@@ -1,6 +1,7 @@
 package com.kmgeronimo.dentalclinicbackend.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kmgeronimo.dentalclinicbackend.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,6 +16,7 @@ public class PaymentEntity {
     @GeneratedValue(generator = "uuid")
     private String paymentId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private PatientEntity patient;
@@ -31,7 +33,8 @@ public class PaymentEntity {
     @JoinColumn(name = "insurance_id")
     private InsuranceEntity insurance;
 
-    @OneToOne
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "appointment_id")
     private AppointmentsEntity appointment;
 }

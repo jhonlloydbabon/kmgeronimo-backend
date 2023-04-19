@@ -145,4 +145,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         return new ResponseMessage(HttpStatus.NOT_ACCEPTABLE, "You can't delete this appointment");
     }
+
+    @Override
+    public AppointmentsEntity fetchAppointmentEntity(String id) {
+        Optional<AppointmentsEntity> optionalAppointments = appointmentRepository.findById(id);
+        if(!optionalAppointments.isPresent())return null;
+        AppointmentsEntity appointmentsEntity = optionalAppointments.get();
+        return appointmentsEntity;
+    }
 }
