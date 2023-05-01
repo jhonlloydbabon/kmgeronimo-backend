@@ -3,10 +3,7 @@ package com.kmgeronimo.dentalclinicbackend.controller;
 import com.kmgeronimo.dentalclinicbackend.entity.PaymentEntity;
 import com.kmgeronimo.dentalclinicbackend.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,4 +19,7 @@ public class PaymentController {
     public List<PaymentEntity> fetchAllPayment(){
         return paymentService.fetchAllPayment();
     }
+
+    @GetMapping("/{id}")
+    public PaymentEntity fetchPayment(@PathVariable("id") String id){ return paymentService.fetchPayment(id); }
 }

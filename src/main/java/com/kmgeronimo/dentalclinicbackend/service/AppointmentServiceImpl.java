@@ -87,9 +87,9 @@ public class AppointmentServiceImpl implements AppointmentService {
             paymentEntity.setInsurance(insurance);
             paymentEntity.setType(appointment.getType());
             paymentEntity.setTotalPayment((Double) appointment.getTotalAmount());
-
             paymentEntity.setStatus(PaymentStatus.PENDING);
             paymentEntity.setPaymentPhoto(null);
+        System.out.println(paymentEntity.getMethod());
             paymentRepository.save(paymentEntity);
             return new ResponseMessage(HttpStatus.OK, "Created appointment successfully!");
     }
