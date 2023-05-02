@@ -2,6 +2,7 @@ package com.kmgeronimo.dentalclinicbackend.controller;
 
 import com.kmgeronimo.dentalclinicbackend.entity.AnnouncementEntity;
 import com.kmgeronimo.dentalclinicbackend.entity.ResponseMessage;
+import com.kmgeronimo.dentalclinicbackend.model.AccountDisable;
 import com.kmgeronimo.dentalclinicbackend.model.Announcement;
 import com.kmgeronimo.dentalclinicbackend.service.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,4 +26,22 @@ public class AnnouncementController {
 
     @GetMapping("/")
     public List<AnnouncementEntity> getAllAnnouncement(){ return service.getAllAnnouncement(); }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseMessage> updateAnnouncement(@PathVariable("id") String id, @RequestBody Announcement announcement){
+        ResponseMessage message = service.updateAnnouncement(id,announcement);
+        return ResponseEntity.status(message.getStatus()).body(message);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseMessage> deleteAnnouncement(@PathVariable("id") String id){
+        ResponseMessage message = service.deleteAnnouncement(id);
+        return ResponseEntity.status(message.getStatus()).body(message);
+    }
+
+    @PutMapping("/disable")
+    public void disableAnnouncement(@RequestBody AccountDisable accountDisable){
+        service.disableAnnouncement(accountDisable);
+    }
+
 }
