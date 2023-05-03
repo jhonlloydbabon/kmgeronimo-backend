@@ -91,7 +91,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             paymentEntity.setPaymentPhoto(null);
         System.out.println(paymentEntity.getMethod());
             paymentRepository.save(paymentEntity);
-            return new ResponseMessage(HttpStatus.OK, "Created appointment successfully!");
+            return new ResponseMessage(HttpStatus.OK, "Your appointment has been successfully booked!");
     }
 
     @Override
@@ -115,6 +115,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             HistoryEntity historyEntity = new HistoryEntity();
             BeanUtils.copyProperties(history, historyEntity);
             historyRepository.save(historyEntity);
+
+            return new ResponseMessage(HttpStatus.OK, "Congratulations, the appointment has been completed successfully!");
         }
         if(appointmentsEntity.getStatus().equals(AppointmentStatus.CANCELLED)){
             history = History.builder()
@@ -128,10 +130,11 @@ public class AppointmentServiceImpl implements AppointmentService {
             historyRepository.save(historyEntity);
             PaymentEntity paymentEntity = paymentRepository.findByAppointment(appointmentsEntity);
             paymentRepository.delete(paymentEntity);
+            return new ResponseMessage(HttpStatus.OK, "The cancellation request for the appointment has been successful");
         }
 
         appointmentRepository.save(appointmentsEntity);
-        return new ResponseMessage(HttpStatus.OK, "The appointment has been "+statusModel.getStatus());
+        return new ResponseMessage(HttpStatus.OK, "The appointment has been "+statusModel.getStatus().toLowerCase());
     }
 
     @Override
