@@ -4,9 +4,11 @@ import com.kmgeronimo.dentalclinicbackend.entity.PatientEntity;
 import com.kmgeronimo.dentalclinicbackend.entity.ResponseMessage;
 import com.kmgeronimo.dentalclinicbackend.error.UserNotFoundException;
 import com.kmgeronimo.dentalclinicbackend.model.AccountDisable;
+import com.kmgeronimo.dentalclinicbackend.model.AccountLogin;
 import com.kmgeronimo.dentalclinicbackend.model.Patient;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PatientService {
 
@@ -20,4 +22,13 @@ public interface PatientService {
 
     ResponseMessage disablePatient(AccountDisable accountDisable);
 
+    ResponseMessage loginPatientAccount(AccountLogin accountLogin);
+
+    ResponseMessage isEmailAlreadyExist(String email);
+
+    ResponseMessage isContactNumberAlreadyExist(String contactNumber);
+
+    ResponseMessage checkIfValidPatient(String token);
+
+    PatientEntity fetchPatientEntityByToken(String token);
 }

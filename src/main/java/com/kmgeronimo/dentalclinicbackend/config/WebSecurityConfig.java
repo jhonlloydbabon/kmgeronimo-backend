@@ -27,6 +27,7 @@ public class WebSecurityConfig {
             "/api/v1/payment/**",
             "/api/v1/history/**",
             "/api/v1/announcement/**",
+            "/api/v1/sms/**",
             "/ws/"
     };
 

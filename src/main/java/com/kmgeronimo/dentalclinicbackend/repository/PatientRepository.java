@@ -11,5 +11,11 @@ import java.util.List;
 @Repository
 public interface PatientRepository extends JpaRepository<PatientEntity, String> {
     PatientEntity findByContactNumberAndEmail(String phoneNumber, String email);
+
+    PatientEntity findByEmail(String email);
+
+    PatientEntity findByContactNumber(String contactNumber);
     InsuranceEntity findByInsurance(String id);
+
+    PatientEntity findByUsername(String username);
 }

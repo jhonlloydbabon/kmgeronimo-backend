@@ -27,6 +27,6 @@ public class Patient {
     private String username;
     private String password;
     private Boolean verified;
-    private String haveInsurance;
+    private String haveInsurance="no";
     private List<InsuranceModel> insuranceInfo = new ArrayList<>();
 }

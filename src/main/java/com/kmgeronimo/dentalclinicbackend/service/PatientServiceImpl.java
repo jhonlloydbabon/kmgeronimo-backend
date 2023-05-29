@@ -1,12 +1,12 @@
 package com.kmgeronimo.dentalclinicbackend.service;
 
-import com.kmgeronimo.dentalclinicbackend.entity.InsuranceEntity;
-import com.kmgeronimo.dentalclinicbackend.entity.PatientEntity;
-import com.kmgeronimo.dentalclinicbackend.entity.ResponseMessage;
+import com.kmgeronimo.dentalclinicbackend.entity.*;
 import com.kmgeronimo.dentalclinicbackend.error.UserNotFoundException;
 import com.kmgeronimo.dentalclinicbackend.model.AccountDisable;
+import com.kmgeronimo.dentalclinicbackend.model.AccountLogin;
 import com.kmgeronimo.dentalclinicbackend.model.Patient;
 import com.kmgeronimo.dentalclinicbackend.repository.PatientRepository;
+import com.kmgeronimo.dentalclinicbackend.repository.PatientVerificationTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,9 @@ public class PatientServiceImpl implements PatientService{
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private PatientVerificationTokenRepository patientVerificationTokenRepository;
+
     @Override
     public ResponseMessage registerPatient(Patient patient) {
         PatientEntity searchPatient = repository.findByContactNumberAndEmail(patient.getContactNumber(), patient.getEmail());
@@ -42,6 +45,9 @@ public class PatientServiceImpl implements PatientService{
         PatientEntity patientEntity = new PatientEntity();
         BeanUtils.copyProperties(patient, patientEntity);
 
+        if(patient.getHaveInsurance().equalsIgnoreCase("no")){
+            patientEntity.setInsurance(null);
+        }
         if(patient.getHaveInsurance().equalsIgnoreCase("yes")){
             List<InsuranceEntity> insuranceEntities = patient.getInsuranceInfo().stream()
                             .map((val)->{
@@ -99,6 +105,7 @@ public class PatientServiceImpl implements PatientService{
         patientEntity.setGender(patient.getGender());
         patientEntity.setContactNumber(patient.getContactNumber());
         patientEntity.setEmail(patient.getEmail());
+        patientEntity.setProfile(patient.getProfile());
         repository.save(patientEntity);
         return new ResponseMessage(HttpStatus.OK, "Update Patient Information Successfully!");
     }
@@ -112,8 +119,67 @@ public class PatientServiceImpl implements PatientService{
                 " Account Successfully!");
     }
 
+    @Override
+    public ResponseMessage loginPatientAccount(AccountLogin accountLogin) {
+        Optional<PatientEntity> patientEntity = Optional.ofNullable(repository.findByUsername(accountLogin.getUsername()));
+        if(!patientEntity.isPresent()){
+            return new ResponseMessage(HttpStatus.NOT_FOUND, "Account doesn't exist");
+        }
+        if(!patientEntity.get().getUsername().equals(accountLogin.getUsername()) || !passwordEncoder.matches(accountLogin.getPassword(), patientEntity.get().getPassword())){
+            return new ResponseMessage(HttpStatus.NOT_ACCEPTABLE, "Invalid username or password");
+        }
+        if(patientEntity.get().getVerified()==false) return new ResponseMessage(HttpStatus.NOT_ACCEPTABLE, "Kindly contact the admin to reactivation of your account");
+        Optional<PatientVerificationToken> patientVerificationToken = Optional.ofNullable(patientVerificationTokenRepository.findByPatientEntity(patientEntity.get()));
+        if(patientVerificationToken.isPresent()){
+            patientVerificationTokenRepository.delete(patientVerificationToken.get());
+        }
+
+        String token = UUID.randomUUID().toString();
+        patientVerificationToken = Optional.of(new PatientVerificationToken(token, patientEntity.get()));
+        patientVerificationTokenRepository.save(patientVerificationToken.get());
+        return new ResponseMessage(HttpStatus.OK, token);
+    }
+
+    @Override
+    public ResponseMessage isEmailAlreadyExist(String email) {
+        PatientEntity patientEntity = repository.findByEmail(email);
+        if(!Objects.isNull(patientEntity)) return new ResponseMessage(HttpStatus.NOT_ACCEPTABLE, "Email already exist");
+        return new ResponseMessage(HttpStatus.OK, "Approved");
+    }
+
+    @Override
+    public ResponseMessage isContactNumberAlreadyExist(String contactNumber) {
+        PatientEntity patientEntity = repository.findByContactNumber(contactNumber);
+        if(!Objects.isNull(patientEntity)) return new ResponseMessage(HttpStatus.NOT_ACCEPTABLE, "Contact number already exist");
+        return new ResponseMessage(HttpStatus.OK, "Approved");
+    }
+
+    @Override
+    public ResponseMessage checkIfValidPatient(String token) {
+        PatientVerificationToken patientVerificationToken = patientVerificationTokenRepository.findByToken(token);
+        if(Objects.isNull(patientVerificationToken)) return new ResponseMessage(HttpStatus.NOT_ACCEPTABLE, "invalid");
+        PatientEntity patient = patientVerificationToken.getPatientEntity();
+        Calendar calendar = Calendar.getInstance();
+        if((patientVerificationToken.getExpirationTime().getTime()-calendar.getTime().getTime())<=0){
+            generateNewToken(patientVerificationToken.getToken());
+            return new ResponseMessage(HttpStatus.OK, "valid");
+        }
+        return new ResponseMessage(HttpStatus.OK, "valid");
+    }
+
+    @Override
+    public PatientEntity fetchPatientEntityByToken(String token) { return patientVerificationTokenRepository.findByToken(token).getPatientEntity(); }
+
     public static Integer calculateAge(LocalDate birthday){
         LocalDate currentDate = LocalDate.now();
         return Period.between(birthday, currentDate).getYears();
     }
+
+    public PatientVerificationToken generateNewToken(String token){
+        PatientVerificationToken patientVerificationToken = patientVerificationTokenRepository.findByToken(token);
+        patientVerificationToken.setToken(UUID.randomUUID().toString());
+        patientVerificationTokenRepository.save(patientVerificationToken);
+        return  patientVerificationToken;
+    }
+
 }
