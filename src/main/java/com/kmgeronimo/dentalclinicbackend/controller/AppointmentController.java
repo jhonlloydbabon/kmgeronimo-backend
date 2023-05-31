@@ -34,6 +34,11 @@ public class AppointmentController {
         return service.fetchAppointmentEntity(id);
     }
 
+    @GetMapping("/patient/{id}")
+    private List<AppointmentsEntity> fetchPatientAppointmentList(@PathVariable("id") String id){
+        return service.fetchPatientAppointmentList(id);
+    }
+
     @PutMapping("/status/{id}")
     public ResponseEntity<ResponseMessage> editAppointmentStatus(@PathVariable("id") String id, @RequestBody AppointmentStatusModel appointmentStatusModel){
         ResponseMessage message = service.editAppointmentStatus(id, appointmentStatusModel);

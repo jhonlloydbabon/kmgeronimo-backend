@@ -17,4 +17,6 @@ public interface AppointmentService {
     ResponseMessage deleteAppointment(String id);
 
     AppointmentsEntity fetchAppointmentEntity(String id);
+
+    List<AppointmentsEntity> fetchPatientAppointmentList(String id);
 }

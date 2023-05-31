@@ -156,4 +156,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentsEntity appointmentsEntity = optionalAppointments.get();
         return appointmentsEntity;
     }
+
+    @Override
+    public List<AppointmentsEntity> fetchPatientAppointmentList(String id) {
+        PatientEntity patient = patientRepository.findById(id).get();
+        return appointmentRepository.findAllByPatient(patient);
+    }
 }
