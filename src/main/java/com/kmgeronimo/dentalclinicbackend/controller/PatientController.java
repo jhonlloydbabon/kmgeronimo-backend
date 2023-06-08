@@ -76,7 +76,7 @@ public class PatientController {
     }
 
     @GetMapping("/fetchPatient/{token}")
-    private PatientEntity fetchPatientEntityByToken(@PathVariable("token") String token){
+    private PatientEntity fetchPatientEntityByToken(@PathVariable("token") String token) throws Exception {
         return service.fetchPatientEntityByToken(token);
     }
 }

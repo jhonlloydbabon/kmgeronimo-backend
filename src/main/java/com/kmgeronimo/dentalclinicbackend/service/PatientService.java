@@ -30,5 +30,5 @@ public interface PatientService {
 
     ResponseMessage checkIfValidPatient(String token);
 
-    PatientEntity fetchPatientEntityByToken(String token);
+    PatientEntity fetchPatientEntityByToken(String token) throws Exception;
 }

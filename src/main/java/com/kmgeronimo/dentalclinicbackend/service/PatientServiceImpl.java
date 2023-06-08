@@ -156,8 +156,9 @@ public class PatientServiceImpl implements PatientService{
 
     @Override
     public ResponseMessage checkIfValidPatient(String token) {
+        if(Objects.isNull(token)) return new ResponseMessage(HttpStatus.NOT_FOUND, "Invalid");
         PatientVerificationToken patientVerificationToken = patientVerificationTokenRepository.findByToken(token);
-        if(Objects.isNull(patientVerificationToken)) return new ResponseMessage(HttpStatus.NOT_ACCEPTABLE, "invalid");
+        if(Objects.isNull(patientVerificationToken)) return new ResponseMessage(HttpStatus.NOT_FOUND, "Invalid");
         PatientEntity patient = patientVerificationToken.getPatientEntity();
         Calendar calendar = Calendar.getInstance();
         if((patientVerificationToken.getExpirationTime().getTime()-calendar.getTime().getTime())<=0){
@@ -168,7 +169,14 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Override
-    public PatientEntity fetchPatientEntityByToken(String token) { return patientVerificationTokenRepository.findByToken(token).getPatientEntity(); }
+    public PatientEntity fetchPatientEntityByToken(String token) throws Exception {
+        if(Objects.isNull(token)) throw new Exception("Invalid");
+        Optional<PatientEntity> patientEntity = Optional.ofNullable(patientVerificationTokenRepository.findByToken(token).getPatientEntity());
+        if(!patientEntity.isPresent()){
+            throw new Exception("Invalid");
+        }
+        return patientEntity.get();
+    }
 
     public static Integer calculateAge(LocalDate birthday){
         LocalDate currentDate = LocalDate.now();
